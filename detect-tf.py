@@ -13,12 +13,13 @@ signatures = [x.split(' ')[2] for x in open('labelmap.txt').read().split('\n')]
 show_video = False
 video_out = False
 
-if sys.argv[1] == '--show':
-    show_video = True
-    sys.argv = [sys.argv[0]] + sys.argv[2:]
+while sys.argv[1][0] == '-':
+    if sys.argv[1] == '--show':
+        show_video = True
+    if sys.argv[1] == '--write':
+        video_out = True
 
-if sys.argv[1] == '--write':
-    video_out = True
+    sys.argv = [sys.argv[0]] + sys.argv[2:]
 
 # OpenCV video capture
 video_path = sys.argv[1]
