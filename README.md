@@ -1,4 +1,4 @@
-This is just a simple tiny code to detect objects in an input video.
+This is just a simple tiny code to detect objects in an input video using TensorFlow Lite.
 
 It's largerly based on the Frigate code
 
