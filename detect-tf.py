@@ -6,18 +6,22 @@ import tensorflow as tf
 import sys
 import multiprocessing
 
+minp = 0.7
 numcpus = multiprocessing.cpu_count()
 
 wanted = ["person", "cat", "dog", "pizza"]
 signatures = [x.split(' ')[2] for x in open('labelmap.txt').read().split('\n')]
 show_video = False
 video_out = False
+process_all_video = False
 
 while sys.argv[1][0] == '-':
     if sys.argv[1] == '--show':
         show_video = True
     if sys.argv[1] == '--write':
         video_out = True
+    if  sys.argv[1] == '--all':
+        process_all_video = True
 
     sys.argv = [sys.argv[0]] + sys.argv[2:]
 
@@ -54,7 +58,7 @@ class detector:
        detections = np.zeros((20, 6), np.float32)
 
        for i in range(count):
-          if scores[i] < 0.4 or i == 20:
+          if scores[i] < minp or i == 20:
              break
           detections[i] = [
              class_ids[i],
@@ -87,7 +91,7 @@ while cap.isOpened():
     dets = det.detect_raw(input_data)
     
     for d in dets:
-        if d[1] < 0.4:
+        if d[1] < minp:
             continue
         sigstr = signatures[d[0].astype(int)]
         prob = (d[1] * 100).astype(int)
@@ -105,6 +109,9 @@ while cap.isOpened():
         cv2.imshow('Signature Detection', frame)
     if video_out:
         out.write(frame)
+
+    if detected and not process_all_video:
+        break
 
     # Break the loop when 'q' is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
