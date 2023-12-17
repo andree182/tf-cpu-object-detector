@@ -5,12 +5,15 @@ import numpy as np
 import tensorflow as tf
 import sys
 import multiprocessing
+import os
+
+script_directory = os.path.dirname(os.path.abspath(sys.argv[0]))
 
 minp = 0.7
 numcpus = multiprocessing.cpu_count()
 
 wanted = ["person", "cat", "dog", "pizza"]
-signatures = [x.split(' ')[2] for x in open('labelmap.txt').read().split('\n')]
+signatures = [x.split(' ')[2] for x in open(script_directory + '/labelmap.txt').read().split('\n')]
 show_video = False
 video_out = False
 process_all_video = False
@@ -36,8 +39,8 @@ print("PROCESSING: " + video_path)
 
 class detector:
     def __init__(self):
-       self.model_path = 'cpu_model.tflite'  # Replace with the path to your .tflite file
-       self.interpreter = tf.lite.Interpreter(model_path=self.model_path, num_threads = numcpus - 2)
+       self.model_path = script_directory + '/cpu_model.tflite'
+       self.interpreter = tf.lite.Interpreter(model_path=self.model_path, num_threads = numcpus - 1)
 
        self.interpreter.allocate_tensors()
 
